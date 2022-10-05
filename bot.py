@@ -38,20 +38,34 @@ if __name__ == '__main__':
         message = str(txt.content)
         author = str(txt.author)
         channel = txt.channel
+
         OWNER_ID = os.getenv('OWNER_ID')
+        prefix = os.getenv('PREFIX')
 
         flash_cmd(message, author)
 
         if txt.author == bot.user:
             pass
         
-        if message == '.info':
+        if message == f'{prefix}info':
             await channel.send("**`Hey there! I'm Albus, a featured bot for this server.`**")
 
-        elif message == '.ping':
+        elif message == f'{prefix}ping':
 
             ping = str(round(bot.latency, 2))
             await channel.send(f"**`Ping: {ping}`**")
+
+        elif message.startswith(f'{prefix}prefix'):
+            new_prefix = message.split(' ')[-1]
+            msg_link = txt.jump_url
+
+            try: 
+                dotenv.set_key('Database/SECRETS.env', 'PREFIX', new_prefix)
+                await channel.send(f'prefix updated to **`{new_prefix}`**')
+
+            except Exception as E:
+                issue_channel = bot.get_channel(1027193550007435334)
+                await issue_channel.send(f'error in **`{prefix}prefix`** command\nmessage link:- {msg_link}')
 
         elif message == '$reboot$':
 
