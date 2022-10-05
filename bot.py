@@ -8,7 +8,7 @@ import discord
 import termcolor
 
 from __init__ import *
-
+from Database.command_details import cmd_details
 
 
 cls()
@@ -23,6 +23,8 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 bot = discord.Client(intents=intents)
 termcolor.cprint('Ready', 'green')
 
+prefix_ = ''
+
 
 
 if __name__ == '__main__':
@@ -35,26 +37,45 @@ if __name__ == '__main__':
 
     @bot.event
     async def on_message(txt):
+        global prefix_
+
         message = str(txt.content)
         author = str(txt.author)
         channel = txt.channel
 
         OWNER_ID = os.getenv('OWNER_ID')
-        prefix = dotenv.get_key('Database/SECRETS.env', 'PREFIX')
+        prefix = prefix_ = dotenv.get_key('Database/SECRETS.env', 'PREFIX')
 
         flash_cmd(message, author)
 
         if txt.author == bot.user:
             pass
-        
-        if message == f'{prefix}info':
-            await channel.send("**`Hey there! I'm Albus, a featured bot for this server.`**")
 
+        if message.startswith(f'{prefix}help'):
+            try: cmd = message.split(' ')[-1]
+            except IndexError: pass
+
+            if cmd.__len__ == 0:
+                with open('Database/commands.txt', 'r') as cmd_file:
+                    cmds = cmd_file.read()
+
+                await channel.send(cmds)
+
+            else:
+                cmd_info = cmd_details[cmd]
+                await channel.send(f'Command: **`{cmd}`**\nInfo: **`{cmd_info}`**')
+
+        # info command
+        elif message == '$info':
+            await channel.send(f"**`Hey there! I'm Albus, a featured bot for this server.`**\nThe active prefix is: `{prefix}`")
+
+        # ping command
         elif message == f'{prefix}ping':
 
             ping = str(round(bot.latency, 2))
             await channel.send(f"**`Ping: {ping}`**")
 
+        # prefix change command
         elif message.startswith(f'{prefix}prefix'):
             new_prefix = message.split(' ')[-1]
             msg_link = txt.jump_url
@@ -67,6 +88,7 @@ if __name__ == '__main__':
                 issue_channel = bot.get_channel(1027193550007435334)
                 await issue_channel.send(f'error in **`{prefix}prefix`** command\nmessage link:- {msg_link}')
 
+        # bot reboot command (use as-less-as possible)
         elif message == '$reboot$':
 
             if author == OWNER_ID:
@@ -78,6 +100,7 @@ if __name__ == '__main__':
             else:
                 await channel.send(f"**`User {author} don't have the permissions to reboot the bot`**")
 
+        # bot shutdown command
         elif message == '$shutdown$':
             if author == OWNER_ID: quit()
             else: await channel.send(f"**`User {author} don't have the permissions to reboot the bot`**")
