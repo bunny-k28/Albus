@@ -40,7 +40,7 @@ if __name__ == '__main__':
         channel = txt.channel
 
         OWNER_ID = os.getenv('OWNER_ID')
-        prefix = os.getenv('PREFIX')
+        prefix = dotenv.get_key('Database/SECRETS.env', 'PREFIX')
 
         flash_cmd(message, author)
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
             msg_link = txt.jump_url
 
             try: 
-                dotenv.set_key('Database/SECRETS.env', 'PREFIX', new_prefix)
+                change_status = dotenv.set_key('Database/SECRETS.env', 'PREFIX', new_prefix)
                 await channel.send(f'prefix updated to **`{new_prefix}`**')
 
             except Exception as E:
