@@ -1,6 +1,7 @@
 import os
 import dotenv
 import random
+import discord
 
 from datetime import datetime
 
@@ -46,7 +47,17 @@ def flash_cmd(command: str, author: str):
 
     if author == 'Albus#2627': pass
     elif ((author != 'Albus#2627') and (command.startswith(prefix)) or (command.startswith('$'))): 
-        with open('Database/command_logs.txt', 'a', encoding='utf-8') as cmd_logs:
+        with open('Database/cmd_logs.txt', 'a', encoding='utf-8') as cmd_logs:
             cmd_logs.write(f'{date} ~ {time}\n•Command used: {command}\n•By: {author}\n\n')
 
         print(f"Command used: {command}\nBy: {author}\n")
+
+
+def embed(color: discord.Colour, cmd: str, message: str, title: str='', footer: str=''):
+    embed_msg = discord.Embed(
+        colour=color, 
+        title=f'Command: **`{cmd}`**\n{title}', 
+        description=f'**```{message}```**\n\n{footer}'
+    )
+
+    return embed_msg

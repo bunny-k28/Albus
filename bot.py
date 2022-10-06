@@ -7,6 +7,7 @@ import dotenv
 import discord
 import termcolor
 
+from discord import Colour
 from __init__ import *
 
 
@@ -61,7 +62,9 @@ if __name__ == '__main__':
             if cmd.__len__() >= 1:
                 try: 
                     cmd_info = get_cmd_info(prefix, cmd[-1])
-                    await channel.send(f'Command: **`{cmd}`**\nInfo:- **```{cmd_info}```**')
+                    # f'Command: **`{cmd}`**\nInfo:- **```{cmd_info}```**'
+                    emd = embed(Colour.blurple(), f'$help {cmd[0]}', cmd_info)
+                    await channel.send(embed=emd)
 
                 except IndexError as IE: print("error in help commannd", IE)
 
@@ -69,17 +72,24 @@ if __name__ == '__main__':
                 with open('Database/commands.txt', 'r') as cmd_file:
                     cmds = cmd_file.read()
 
-                await channel.send(f"Active Prefix Symbol:- ``{prefix}``\n{cmds}")
+                title = f"Active Prefix Symbol:- ``{prefix}``"
+                emd = embed(Colour.blurple(), '$help', cmds, title)
+                await channel.send(embed=emd)
 
         # info command
         elif message == f'{prefix}info':
-            await channel.send(f"**`Hey there! I'm Albus, a featured bot for this server.`**")
+            msg = "Hey there! I'm Albus, a featured bot for this server."
+            emd = embed(Colour.blurple(), message, msg, 'Intro to Albus.')
+
+            await channel.send(embed=emd)
 
         # ping command
         elif message == f'{prefix}ping':
 
             ping = str(int(round(bot.latency, 2) * 100))
-            await channel.send(f"**`Ping: {ping}ms`**")
+            emd = embed(Colour.blurple(), message, f'{ping}ms')
+
+            await channel.send(embed=emd)
 
         # prefix change command
         elif message.startswith(f'{prefix}prefix'):
@@ -88,28 +98,53 @@ if __name__ == '__main__':
 
             try: 
                 change_status = dotenv.set_key('Database/SECRETS.env', 'PREFIX', new_prefix)
-                await channel.send(f'prefix updated to **`{new_prefix}`**')
+                if change_status[0] is True:
+                    msg = f"prefix updated to '{new_prefix}'"
+                    emd = embed(Colour.blurple(), message, msg)
+
+                    await channel.send(embed=emd)
+
+                else:
+                    msg = f"Unable to update prefix to '{new_prefix}'"
+                    emd = embed(Colour.red(), message, msg, 'Facing Error')
+
+                    await channel.send(embed=emd)
 
             except Exception as E:
+                msg = f"error in '{prefix}prefix' command"
+                foot_msg = f'message jump link:- {msg_link}'
+                emd = embed(Colour.red(), message, msg, 'Facing Error', foot_msg)
                 issue_channel = bot.get_channel(1027193550007435334)
-                await issue_channel.send(f'error in **`{prefix}prefix`** command\nmessage link:- {msg_link}')
+
+                await issue_channel.send(embed=emd)
 
         # bot reboot command (only for dev use)
         elif message == '$reboot$':
 
             if author == OWNER_ID:
                 botID = str(bot.user)
-                await channel.send(f'**`{botID} Will be updated within 5 to 7 seconds...`**')
+                msg = f'{botID} Will be updated within 5 to 7 seconds...'
+                foot_msg = 'Note:- use this command only for development purposes.'
+                emd = embed(Colour.orange(), message, msg, 'Admin Command', footer=foot_msg)
 
+                await channel.send(embed=emd)
                 os.system(r'py .\bot.py')
 
             else:
-                await channel.send(f"**`User {author} don't have the permissions to reboot the bot`**")
+                msg = f"User {author} don't have the permissions to reboot the bot"
+                foot_msg = 'Note:- use this command only for development purposes.'
+                emd = embed(Colour.red(), message, msg, 'Forbidden', footer=foot_msg)
+
+                await channel.send(embed=emd)
 
         # bot shutdown command
         elif message == '$shutdown$':
             if author == OWNER_ID: quit()
-            else: await channel.send(f"**`User {author} don't have the permissions to reboot the bot`**")
+            else: 
+                msg = f"User {author} don't have the permissions to shutdown the bot"
+                emd = embed(Colour.red(), message, msg, 'Forbidden')
+
+                await channel.send(embed=emd)
 
 
     bot.run(BOT_TOKEN)
