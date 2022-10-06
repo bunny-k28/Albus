@@ -51,17 +51,17 @@ if __name__ == '__main__':
             pass
 
         # help command
-        if message.startswith(f'{prefix}help'):
+        if message.startswith('$help'):
             try: 
                 cmd = message.split(' ')
-                cmd.remove(f'{prefix}help')
+                cmd.remove('$help')
 
             except IndexError: pass
 
             if cmd.__len__() >= 1:
                 try: 
                     cmd_info = get_cmd_info(prefix, cmd[-1])
-                    await channel.send(f'Command: **`{cmd}`**\nInfo: **`{cmd_info}`**')
+                    await channel.send(f'Command: **`{cmd}`**\nInfo:- **```{cmd_info}```**')
 
                 except IndexError as IE: print("error in help commannd", IE)
 
@@ -69,17 +69,17 @@ if __name__ == '__main__':
                 with open('Database/commands.txt', 'r') as cmd_file:
                     cmds = cmd_file.read()
 
-                await channel.send(cmds)
+                await channel.send(f"Active Prefix Symbol:- ``{prefix}``\n{cmds}")
 
         # info command
-        elif message == '$info':
-            await channel.send(f"**`Hey there! I'm Albus, a featured bot for this server.`**\nThe active prefix is: `{prefix}`")
+        elif message == f'{prefix}info':
+            await channel.send(f"**`Hey there! I'm Albus, a featured bot for this server.`**")
 
         # ping command
         elif message == f'{prefix}ping':
 
-            ping = str(round(bot.latency, 2))
-            await channel.send(f"**`Ping: {ping}`**")
+            ping = str(int(round(bot.latency, 2) * 100))
+            await channel.send(f"**`Ping: {ping}ms`**")
 
         # prefix change command
         elif message.startswith(f'{prefix}prefix'):
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                 issue_channel = bot.get_channel(1027193550007435334)
                 await issue_channel.send(f'error in **`{prefix}prefix`** command\nmessage link:- {msg_link}')
 
-        # bot reboot command (use as-less-as possible)
+        # bot reboot command (only for dev use)
         elif message == '$reboot$':
 
             if author == OWNER_ID:

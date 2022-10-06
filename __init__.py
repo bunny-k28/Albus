@@ -11,10 +11,10 @@ def get_cmd_info(prefix: str, key_to_get: str):
     random_prefix = random.choice(['!', '.', '/', '*', '&'])
 
     help = f"""This command works in two way:- 
-1. If you just type {prefix}help, it will show you the list of all commands.
-2. If you type {prefix}help <command>, if will show you the info of that specified command.
+1. If you just type $help, it will show you the list of all commands and the active prefic symbol.
+2. If you type $help <command>, if will show you the info of that specified command.
 
-For Ex:- {prefix}help or {prefix}help {prefix}ping"""
+For Ex:- $help or $help {prefix}ping"""
 
     info = "This command tells you about the bot. And the active command prefix of the bot."
 
@@ -26,8 +26,8 @@ You just have to type {prefix}prefix <new_prefix>. The prefix will be updated th
 For Ex:- {prefix}prefix {random_prefix}"""
 
     cmd_details = {
-        f'{prefix}help': help, 
-        f'$info': info, 
+        '$help': help, 
+        f'{prefix}info': info, 
         f'{prefix}ping': ping, 
         f'{prefix}prefix': prefix_}
 
