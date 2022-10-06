@@ -1,11 +1,10 @@
+
 Available bot commands:-
 
-**```
-1. <prefix>help <command(optional)>
+1. $help <command(optional)>
 
 2. <prefix>info
 
 3. <prefix>ping
 
 4. <prefix>prefix <new_prefix>
-```**
