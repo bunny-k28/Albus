@@ -2,6 +2,8 @@ import os
 import dotenv
 import random
 
+from datetime import datetime
+
 
 def cls():
     os.system('cls')
@@ -23,7 +25,9 @@ For Ex:- $help or $help {prefix}ping"""
     prefix_ = f"""This command helps you to change the active prefix of the bot command. 
 You just have to type {prefix}prefix <new_prefix>. The prefix will be updated that moment.
 
-For Ex:- {prefix}prefix {random_prefix}"""
+For Ex:- {prefix}prefix {random_prefix}
+
+Note:- Don't assign '@', '#', '$' as prefix"""
 
     cmd_details = {
         '$help': help, 
@@ -37,5 +41,12 @@ For Ex:- {prefix}prefix {random_prefix}"""
 def flash_cmd(command: str, author: str):
     prefix = dotenv.get_key(dotenv_path='Database/SECRETS.env', key_to_get='PREFIX')
 
+    date = str(datetime.now().strftime('%d-%h-%y'))
+    time = str(datetime.now().time())[:5]
+
     if author == 'Albus#2627': pass
-    elif ((author != 'Albus#2627') and (command.startswith(prefix))): print(f"Command used: {command}\nBy: {author}\n")
+    elif ((author != 'Albus#2627') and (command.startswith(prefix)) or (command.startswith('$'))): 
+        with open('Database/command_logs.txt', 'a', encoding='utf-8') as cmd_logs:
+            cmd_logs.write(f'{date} ~ {time}\n•Command used: {command}\n•By: {author}\n\n')
+
+        print(f"Command used: {command}\nBy: {author}\n")
