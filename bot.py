@@ -8,7 +8,6 @@ import discord
 import termcolor
 
 from __init__ import *
-from Database.command_details import cmd_details
 
 
 cls()
@@ -51,19 +50,26 @@ if __name__ == '__main__':
         if txt.author == bot.user:
             pass
 
+        # help command
         if message.startswith(f'{prefix}help'):
-            try: cmd = message.split(' ')[-1]
+            try: 
+                cmd = message.split(' ')
+                cmd.remove(f'{prefix}help')
+
             except IndexError: pass
 
-            if cmd.__len__ == 0:
+            if cmd.__len__() >= 1:
+                try: 
+                    cmd_info = get_cmd_info(prefix, cmd[-1])
+                    await channel.send(f'Command: **`{cmd}`**\nInfo: **`{cmd_info}`**')
+
+                except IndexError as IE: print("error in help commannd", IE)
+
+            else:
                 with open('Database/commands.txt', 'r') as cmd_file:
                     cmds = cmd_file.read()
 
                 await channel.send(cmds)
-
-            else:
-                cmd_info = cmd_details[cmd]
-                await channel.send(f'Command: **`{cmd}`**\nInfo: **`{cmd_info}`**')
 
         # info command
         elif message == '$info':
