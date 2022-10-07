@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
         # bot shutdown command
         elif message == '$shutdown$':
-            if author == OWNER_ID: quit()
+            if author == OWNER_ID: quit(); exit()
             else: 
                 msg = f"User {author} don't have the permissions to shutdown the bot"
                 emd = embed(Colour.red(), message, msg, 'Forbidden')
