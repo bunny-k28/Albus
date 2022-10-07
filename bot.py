@@ -78,8 +78,7 @@ if __name__ == '__main__':
 
         # info command
         elif message == f'{prefix}info':
-            msg = "Hey there! I'm Albus, a featured bot for this server."
-            emd = embed(Colour.blurple(), message, msg, 'Intro to Albus.')
+            emd = embed(Colour.blurple(), message, bot_info, footer=bot_info_foot)
 
             await channel.send(embed=emd)
 

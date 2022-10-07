@@ -6,6 +6,29 @@ import discord
 from datetime import datetime
 
 
+
+bot_info = """Hey there! I'm Albus, a featured bot for this server.
+You can use '$help' command to view all the available commands.
+
+If you're new to discord bots/discord applications, I got you.
+
+I have some link which you can visit and make your own Discord bot/application.
+
+Check the footer message for the links
+"""
+
+resources_link = "https://discord.com/channels/1017808927691382824/1017808928416989311/1027161718427766844"
+portal_link = f"https://discord.com/developers/applications"
+discordPy_docs_link = "https://discordpy.readthedocs.io/en/latest/index.html"
+wizard_link = "https://docs.google.com/presentation/d/1YiRKyaQjjEq5681G0D_IUc2dTOs0dH_C8hBkdyRJg7A/edit?usp=sharing"
+
+bot_info_foot = f"""• [Discord Developer Portal]({portal_link})
+• [Python Libraries You need]({resources_link})
+• [Discord.py Library Docs]({discordPy_docs_link}) 
+• [Wizard to make your own Discord application]({wizard_link}) 
+"""
+
+
 def cls():
     os.system('cls')
 
@@ -19,7 +42,8 @@ def get_cmd_info(prefix: str, key_to_get: str):
 
 For Ex:- $help or $help {prefix}ping"""
 
-    info = "This command tells you about the bot. And the active command prefix of the bot."
+    info = """This command tells you about the bot. And the active command prefix of the bot. 
+And provides you resources through which you can make your wown bot"""
 
     ping = "This command will show you the latency/ping of the bot host network."
 
