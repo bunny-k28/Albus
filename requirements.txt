@@ -1,5 +1,4 @@
 discord.py==2.0.1
-discord-db==0.1.0
-discord-webhook==0.17.0
 python-dotenv==0.21.0
 termcolor==2.0.1
+pandas==1.4.2
