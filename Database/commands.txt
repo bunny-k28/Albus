@@ -8,3 +8,5 @@ Available bot commands:-
 3. <prefix>ping
 
 4. <prefix>prefix <new_prefix>
+
+5. <prefix>verify <github username>

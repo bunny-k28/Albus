@@ -1,7 +1,9 @@
 import os
+import json
 import dotenv
 import random
 import discord
+import requests
 
 from datetime import datetime
 
@@ -54,11 +56,19 @@ For Ex:- {prefix}prefix {random_prefix}
 
 Note:- Don't assign '@', '#', '$' as prefix"""
 
+    verify = f"""When you join the server, you join as NewCommer and you can't view all the 
+channels. To view the general channels you have to verify yourself.
+
+Command Syntax:- {prefix}verify <your github username>
+For Ex:- {prefix}verify abc
+"""
+
     cmd_details = {
         '$help': help, 
         f'{prefix}info': info, 
         f'{prefix}ping': ping, 
-        f'{prefix}prefix': prefix_}
+        f'{prefix}prefix': prefix_, 
+        f'{prefix}verify': verify}
 
     return cmd_details[key_to_get]
 
@@ -85,3 +95,15 @@ def embed(color: discord.Colour, cmd: str, message: str, title: str='', footer: 
     )
 
     return embed_msg
+
+
+def verify_member(github_username: str):
+    details_api_url = f"https://api.github.com/users/{github_username}"
+    user_data = json.loads(requests.get(details_api_url).content)
+
+    if ('https://github.com/' in user_data["html_url"]) and \
+        (int(user_data["public_repos"]) >= 1):
+            return (True, str(user_data["name"]))
+
+    else:
+        return (False, "Invalid username. Enter a valid GitHub username")
