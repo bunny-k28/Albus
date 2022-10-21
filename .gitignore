@@ -1,5 +1,5 @@
 .vscode
 Testing
 Database/SECRETS.env
-Database/server_database.db
+Database/server.db
 Database/cmd_logs.txt
