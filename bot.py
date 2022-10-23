@@ -20,7 +20,7 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-db = sqlite3.connect('Testing/server.db')
+db = sqlite3.connect('Database/server.db')
 sql = db.cursor()
 
 sql.execute("""CREATE TABLE IF NOT EXISTS verified(member_id TEXT, github_uid TEXT)""")
@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
         # verify command
         elif message.startswith(f'{prefix}verify'):
-            db = sqlite3.connect("Testing/server.db")
+            db = sqlite3.connect("Database/server.db")
             sql = db.cursor()
 
             github_verification_id = str(message.split(' ')[-1])
@@ -140,21 +140,32 @@ if __name__ == '__main__':
 
             sql.execute("SELECT member_id FROM verified")
             verified_members = filter_data(sql.fetchall())
-            print(verified_members)
+            # print(verified_members)
 
             sql.execute("SELECT github_uid FROM verified")
             verified_github_ids = filter_data(sql.fetchall())
-            print(verified_github_ids)
+            # print(verified_github_ids)
 
             if author in verified_members:
-                await channel.send("**```You're already verified```**")
+                msg = "You're already verified"
+                title = "Verification Status"
+                emd = embed(Colour.blurple(), message, msg, title)
+                await channel.send(embed=emd)
                 
             elif github_verification_id in verified_github_ids:
-                await channel.send("**```This githun userID is already verified```**")
+                msg = "This GitHub userID is already verified"
+                title = "Verification Status"
+                emd = embed(Colour.blurple(), message, msg, title)
+                await channel.send(embed=emd)
 
             else:
                 verify_status = verify_member(github_verification_id, )
                 if verify_status[0] is True:
+                    msg = "Now you're verified"
+                    title = "Verification Status"
+                    foot_msg = "Now you can view all the general channels"
+                    emd = embed(Colour.blurple(), message, msg, title)
+
                     sql.execute("""INSERT INTO verified(member_id, github_uid) 
                                 VALUES(?, ?)""", (author, github_verification_id))
                     db.commit()
@@ -162,10 +173,13 @@ if __name__ == '__main__':
                     sql.close()
                     db.close()
 
-                    await channel.send("**```Now you're verified```**")
+                    await channel.send(embed=emd)
 
                 elif verify_status[0] is False:
-                    await channel.send(f"**```{verify_status[-1]}```**")
+                    msg = verify_status[-1]
+                    title = "Verification Status"
+                    emd = embed(Colour.red(), message, msg, title)
+                    await channel.send(embed=emd)
 
         # bot reboot command (only for dev use)
         elif message == '$reboot$':
