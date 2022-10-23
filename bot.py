@@ -20,11 +20,14 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-db = sqlite3.connect('Database/server_database.db')
+db = sqlite3.connect('Database/server.db')
 sql = db.cursor()
 
 sql.execute("""CREATE TABLE IF NOT EXISTS verified(member_id TEXT, github_uid TEXT)""")
 db.commit()
+
+sql.close()
+db.close()
 
 
 BOT_TOKEN = os.getenv('BOT_TOKEN')
@@ -129,45 +132,33 @@ if __name__ == '__main__':
 
         # verify command
         elif message.startswith(f'{prefix}verify'):
-            github_verification_id = message.split(' ')[-1]
+            db = sqlite3.connect("Database/server.db")
+            sql = db.cursor()
+
+            github_verification_id = str(message.split(' ')[-1])
             msg_link = txt.jump_url
 
-            sql.execute("""SELECT member_id FROM verified""")
-            members = sql.fetchall()
+            sql.execute("SELECT member_id FROM verified")
+            verified_members = filter_data(sql.fetchall())
+            print(verified_members)
 
-            sql.execute("""SELECT github_uid FROM verified""")
-            verified_ids = sql.fetchall()
+            sql.execute("SELECT github_uid FROM verified")
+            verified_github_ids = filter_data(sql.fetchall())
+            print(verified_github_ids)
 
-            if str(author) in members:
-                msg = "You're aclready a verified member of this server."
-                emd = embed(Colour.blurple(), message, msg)
-                await channel.send(embed=emd)
-
-            elif github_verification_id in verified_ids:
-                msg = "This github userID is already verified"
-                emd = embed(Colour.blurple(), message, msg)
-                await channel.send(embed=emd)
+            if author in verified_members:
+                channel.send("```You're already verified```")
+                
+            elif github_verification_id in verified_github_ids:
+                channel.send("```This githun userID is already verified```")
 
             else:
-                verify_status = verify_member(github_verification_id)
-                if verify_status[0] is True:
-                    try:
-                        sql.execute(f"""INSERT INTO verified(member_id, github_uid) 
-                                    VALUES(?, ?)""", (author, github_verification_id))
+                sql.execute("""INSERT INTO verified(member_id, github_uid) 
+                            VALUES(?, ?)""", (author, github_verification_id))
+                db.commit()
 
-                        emd = embed(Colour.blurple(), message, "Now you're verified", 
-                                    'Verification Status')
-                        await channel.send(embed=emd)
- 
-                    except Exception as E:
-                        emd = embed(Colour.red(), message, "Unable to verify you", 
-                                    'Verification Status')
-                        await channel.send(embed=emd)
-
-                elif verify_status[0] is False:
-                    emd = embed(Colour.red(), message, verify_status[-1], 
-                                'Verification Status')
-                    await channel.send(embed=emd)
+                sql.close()
+                db.close()
 
         # bot reboot command (only for dev use)
         elif message == '$reboot$':
@@ -190,9 +181,7 @@ if __name__ == '__main__':
 
         # bot shutdown commandb
         elif message == '$shutdown$':
-            if author == OWNER_ID: 
-                sql.close(); db.close()
-                quit(); exit()
+            if author == OWNER_ID: quit(); exit()
             else: 
                 msg = f"User {author} don't have the permissions to shutdown the bot"
                 emd = embed(Colour.red(), message, msg, 'Forbidden')
