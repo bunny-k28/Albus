@@ -147,10 +147,10 @@ if __name__ == '__main__':
             print(verified_github_ids)
 
             if author in verified_members:
-                channel.send("```You're already verified```")
+                await channel.send("```You're already verified```")
                 
             elif github_verification_id in verified_github_ids:
-                channel.send("```This githun userID is already verified```")
+                await channel.send("```This githun userID is already verified```")
 
             else:
                 sql.execute("""INSERT INTO verified(member_id, github_uid) 
