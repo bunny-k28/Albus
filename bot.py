@@ -20,7 +20,7 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-db = sqlite3.connect('Database/server.db')
+db = sqlite3.connect('Testing/server.db')
 sql = db.cursor()
 
 sql.execute("""CREATE TABLE IF NOT EXISTS verified(member_id TEXT, github_uid TEXT)""")
@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
         # verify command
         elif message.startswith(f'{prefix}verify'):
-            db = sqlite3.connect("Database/server.db")
+            db = sqlite3.connect("Testing/server.db")
             sql = db.cursor()
 
             github_verification_id = str(message.split(' ')[-1])
