@@ -107,3 +107,10 @@ def verify_member(github_username: str):
 
     else:
         return (False, "Invalid username. Enter a valid GitHub username")
+
+
+def filter_data(data):
+    filtered_data = []
+    for member in data: filtered_data.append(str(member[0]))
+
+    return filtered_data
