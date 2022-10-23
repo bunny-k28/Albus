@@ -147,10 +147,10 @@ if __name__ == '__main__':
             print(verified_github_ids)
 
             if author in verified_members:
-                await channel.send("```You're already verified```")
+                await channel.send("**```You're already verified```**")
                 
             elif github_verification_id in verified_github_ids:
-                await channel.send("```This githun userID is already verified```")
+                await channel.send("**```This githun userID is already verified```**")
 
             else:
                 sql.execute("""INSERT INTO verified(member_id, github_uid) 
@@ -159,6 +159,8 @@ if __name__ == '__main__':
 
                 sql.close()
                 db.close()
+
+                await channel.send("**```Now you're verified```**")
 
         # bot reboot command (only for dev use)
         elif message == '$reboot$':
