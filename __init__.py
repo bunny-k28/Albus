@@ -106,6 +106,9 @@ def verify_member(github_username: str):
         (int(user_data["public_repos"]) >= 1):
             return (True, str(user_data["name"]))
 
+    elif int(user_data["public_repos"]) == 0:
+        return (False, "To get verified you should have atleast 1 public repo.")
+
     else:
         return (False, "Invalid username. Enter a valid GitHub username")
 
