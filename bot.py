@@ -49,19 +49,19 @@ if __name__ == '__main__':
 
 
     @bot.event
-    async def on_message(txt):
+    async def on_message(ctx):
         global prefix_
 
-        message = str(txt.content)
-        author = str(txt.author)
-        channel = txt.channel
+        message = str(ctx.content)
+        author = str(ctx.author)
+        channel = ctx.channel
 
         OWNER_ID = os.getenv('OWNER_ID')
         prefix = prefix_ = dotenv.get_key('Database/SECRETS.env', 'PREFIX')
 
         flash_cmd(message, author)
 
-        if txt.author == bot.user:
+        if ctx.author == bot.user:
             pass
 
         # help command
@@ -106,7 +106,7 @@ if __name__ == '__main__':
         # prefix change command
         elif message.startswith(f'{prefix}prefix'):
             new_prefix = message.split(' ')[-1]
-            msg_link = txt.jump_url
+            msg_link = ctx.jump_url
 
             try: 
                 change_status = dotenv.set_key('Database/SECRETS.env', 'PREFIX', new_prefix)
@@ -136,7 +136,6 @@ if __name__ == '__main__':
             sql = db.cursor()
 
             github_verification_id = str(message.split(' ')[-1])
-            msg_link = txt.jump_url
 
             sql.execute("SELECT member_id FROM verified")
             verified_members = filter_data(sql.fetchall())
@@ -162,7 +161,7 @@ if __name__ == '__main__':
                 verify_status = verify_member(github_verification_id, )
                 if verify_status[0] is True:
                     try:
-                        role = get_role(txt, "Verified✅")
+                        role = get_role(ctx, "Verified✅")
                         await role[0].add_roles(role[-1])
 
                         msg = "Now you're verified"
