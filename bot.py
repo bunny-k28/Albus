@@ -158,7 +158,7 @@ if __name__ == '__main__':
                 await channel.send(embed=emd)
 
             else:
-                verify_status = verify_member(github_verification_id, )
+                verify_status = verify_member(github_verification_id)
                 if verify_status[0] is True:
                     try:
                         role = get_role(ctx, "Verified✅")
@@ -177,6 +177,11 @@ if __name__ == '__main__':
                         db.close()
 
                         await channel.send(embed=emd)
+
+                        try:
+                            await ctx.author.edit(nick=verify_status[-1])
+                        except Exception as E:
+                            await bot.get_channel(1027193550007435334).send(f'''**```Unable to change nick-name.\nError in line 168\nError: {E}```**''')
 
                     except Exception as E:
                         await bot.get_channel(1027193550007435334).send(f'**```Unable to give role.\nError in line 180\nError: {E}```**')
