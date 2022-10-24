@@ -64,12 +64,19 @@ Command Syntax:- {prefix}verify <your github username>
 For Ex:- {prefix}verify abc
 """
 
+    dev = f"""This command will give you the developer role. If you're verified and want to be 
+a developer of this server. Then use this command to get the developer role.
+
+Note:- Only members who have >=3 repo in their GitHub profile can get this role.
+"""
+
     cmd_details = {
         '$help': help, 
         f'{prefix}info': info, 
         f'{prefix}ping': ping, 
+        f'{prefix}dev': dev,
         f'{prefix}prefix': prefix_, 
-        f'{prefix}verify': verify
+        f'{prefix}verify': verify 
         }
 
     return cmd_details[key_to_get]

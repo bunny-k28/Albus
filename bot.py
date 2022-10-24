@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
             await channel.send(embed=emd)
 
-        # prefix change command
+        # prefix command
         elif message.startswith(f'{prefix}prefix'):
             new_prefix = message.split(' ')[-1]
             msg_link = ctx.jump_url
@@ -129,6 +129,45 @@ if __name__ == '__main__':
                 issue_channel = bot.get_channel(1027193550007435334)
 
                 await issue_channel.send(embed=emd)
+
+        # dev command
+        elif message == f'{prefix}dev':
+            db = sqlite3.connect("Database/server.db")
+            sql = db.cursor()
+
+            try:
+                sql.execute(f"SELECT github_uid FROM verified WHERE member_id='{author}'")
+                githubUID = sql.fetchone()[0]
+            except Exception as E:
+                msg = "You're not verified. 1st verify yourself."
+                title = "Verification Status"
+                foot_msg = f"To get verified, use `{prefix}verify` cmd. For more use `$help` cmd"
+                emd = embed(Colour.blurple(), message, msg, title, foot_msg)
+
+                await channel.send(embed=emd)
+                await bot.get_channel(1027193550007435334).send(f'**```Unable to extract user data\nError in dev command\nError: {E}```**')
+
+            details_api_url = f"https://api.github.com/users/{githubUID}"
+            repo_count = json.loads(requests.get(details_api_url).content)["public_repos"]
+            if repo_count >= 3:
+                try:
+                    role = get_role(ctx, "Developers 💻")
+                    await role[0].add_roles(role[-1])
+
+                    msg = "Now you're a developer."
+                    title = "Role Request"
+                    emd = embed(Colour.blurple(), message, msg, title)
+                    await channel.send(embed=emd)
+
+                except Exception as E:
+                    await bot.get_channel(1027193550007435334).send(f"**```Unable to give developer role\nError in dev command\nError: {E}```**")
+
+            else:
+                msg = "Can't give you developer role. You don't have much experience."
+                title = "Role Request"
+                foot_msg = "For developer role your GitHub profile must have >=3 repo"
+                emd = embed(Colour.blurple(), message, msg, title, foot_msg)
+                await channel.send(embed=emd)
 
         # verify command
         elif message.startswith(f'{prefix}verify'):
