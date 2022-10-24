@@ -161,19 +161,26 @@ if __name__ == '__main__':
             else:
                 verify_status = verify_member(github_verification_id, )
                 if verify_status[0] is True:
-                    msg = "Now you're verified"
-                    title = "Verification Status"
-                    foot_msg = "Now you can view all the general channels"
-                    emd = embed(Colour.blurple(), message, msg, title)
+                    try:
+                        role = get_role(txt, "Verified✅")
+                        await role[0].add_roles(role[-1])
 
-                    sql.execute("""INSERT INTO verified(member_id, github_uid) 
-                                VALUES(?, ?)""", (author, github_verification_id))
-                    db.commit()
+                        msg = "Now you're verified"
+                        title = "Verification Status"
+                        foot_msg = "Now you can view all the general channels"
+                        emd = embed(Colour.blurple(), message, msg, title)
 
-                    sql.close()
-                    db.close()
+                        sql.execute("""INSERT INTO verified(member_id, github_uid) 
+                                    VALUES(?, ?)""", (author, github_verification_id))
+                        db.commit()
 
-                    await channel.send(embed=emd)
+                        sql.close()
+                        db.close()
+
+                        await channel.send(embed=emd)
+
+                    except Exception as E:
+                        await bot.get_channel(1027193550007435334).send(f'**```Unable to give role.\nError in line 180\nError: {E}```**')
 
                 elif verify_status[0] is False:
                     msg = verify_status[-1]
