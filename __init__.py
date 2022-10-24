@@ -6,6 +6,7 @@ import discord
 import requests
 
 from datetime import datetime
+from discord.utils import get
 
 
 
@@ -118,3 +119,10 @@ def filter_data(data):
     for member in data: filtered_data.append(str(member[0]))
 
     return filtered_data
+
+
+def get_role(ctx, role_name: str):
+    member = ctx.author
+    role = get(member.guild.roles, name=role_name)
+
+    return (member, role)
